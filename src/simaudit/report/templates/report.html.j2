@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>simaudit — {{ session.app_name }} — Assessment Report</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.6;background:#f5f5f0;color:#1a1a18;padding:20px}
+.page{max-width:900px;margin:0 auto}
+header{background:#1a1a18;color:#f0ede6;padding:28px 32px;border-radius:10px;margin-bottom:24px}
+header h1{font-size:22px;font-weight:600;margin-bottom:4px}
+header .meta{color:#9a9690;font-size:13px}
+header .badge{display:inline-block;background:#2d2d2a;border-radius:4px;padding:2px 8px;font-size:11px;font-family:monospace;margin-top:8px}
+.warn-box{background:#fff8e6;border:1px solid #f0a800;border-radius:8px;padding:12px 16px;font-size:13px;color:#7a5a00;margin-bottom:20px}
+.summary-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.sev-card{background:#fff;border:1px solid #e0ddd8;border-radius:8px;padding:14px 18px;min-width:100px;text-align:center;flex:1}
+.sev-card .count{font-size:28px;font-weight:700;line-height:1}
+.sev-card .label{font-size:11px;color:#8a8880;text-transform:uppercase;letter-spacing:0.08em;margin-top:4px}
+.section{margin-bottom:28px}
+.section h2{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#6a6860;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e0ddd8}
+.finding{background:#fff;border:1px solid #e0ddd8;border-radius:8px;margin-bottom:8px;overflow:hidden}
+.finding-header{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;cursor:pointer;user-select:none}
+.finding-header:hover{background:#f9f8f5}
+.sev-badge{display:inline-block;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap;flex-shrink:0;color:#fff}
+.masvs-id{font-family:monospace;font-size:11px;background:#f0ede6;color:#5a5850;border-radius:3px;padding:2px 6px;flex-shrink:0}
+.finding-title{font-size:13.5px;font-weight:500;flex:1}
+.finding-body{display:none;padding:12px 14px;border-top:1px solid #e0ddd8;background:#faf9f7}
+.finding-body.open{display:block}
+.finding-detail{font-size:13px;color:#3a3830;margin-bottom:8px}
+.evidence-path{font-family:monospace;font-size:11.5px;color:#6060a0;background:#f0eeff;border-radius:3px;padding:2px 6px;word-break:break-all}
+pre.raw{background:#1a1a18;color:#c0bdb8;padding:12px;border-radius:6px;font-size:11.5px;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word;margin-top:8px;max-height:300px;overflow-y:auto}
+.toggle-hint{font-size:11px;color:#9a9690;margin-left:auto;flex-shrink:0}
+.modules-run{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.mod-chip{background:#e8f4e8;color:#2a5a2a;border-radius:4px;padding:2px 8px;font-size:12px;font-family:monospace}
+.no-findings{color:#8a8880;font-size:13px;padding:12px 0;font-style:italic}
+footer{text-align:center;color:#9a9690;font-size:12px;margin-top:32px;padding-top:16px;border-top:1px solid #e0ddd8}
+@media(max-width:600px){.summary-row{gap:8px}.sev-card{min-width:70px;padding:10px 12px}.sev-card .count{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>simaudit Assessment Report</h1>
+  <div class="meta">App: <strong>{{ session.app_name }}</strong> · Bundle: <code>{{ session.bundle_id }}</code>{% if session.app_version %} · v{{ session.app_version }}{% endif %}</div>
+  <div class="meta">Started: {{ session.started_at.strftime('%Y-%m-%d %H:%M UTC') }} · Session: {{ session.session_id }}</div>
+  <div class="badge">simaudit {{ simaudit_version }} · Simulator-only assessment</div>
+</header>
+
+<div class="warn-box">
+  ⚠ <strong>Simulator-only assessment.</strong> Results reflect a debug/development build running on Xcode Simulator. Secure Enclave, hardware-backed Keychain, App Store binary encryption, and anti-tampering controls are not present in this environment. Findings are leads for further investigation on real hardware, not submittable vulnerability reports.
+</div>
+
+<div class="summary-row">
+{% for sev, count in stats.by_severity.items() %}
+  <div class="sev-card">
+    <div class="count" style="color:{% if sev == 'CRITICAL' %}#c0392b{% elif sev == 'HIGH' %}#e67e22{% elif sev == 'MEDIUM' %}#c9a800{% elif sev == 'LOW' %}#2980b9{% else %}#7f8c8d{% endif %}">{{ count }}</div>
+    <div class="label">{{ sev }}</div>
+  </div>
+{% endfor %}
+</div>
+
+{% if session.modules_run %}
+<div class="section">
+  <h2>Modules Run</h2>
+  <div class="modules-run">
+    {% for mod in session.modules_run %}<span class="mod-chip">{{ mod }}</span>{% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% for category, findings in categories.items() %}
+<div class="section">
+  <h2>{{ category }} ({{ findings|length }})</h2>
+  {% for f in findings %}
+  <div class="finding">
+    <div class="finding-header" onclick="toggle(this)">
+      <span class="sev-badge" style="background:{% if f.severity.value == 'CRITICAL' %}#c0392b{% elif f.severity.value == 'HIGH' %}#e67e22{% elif f.severity.value == 'MEDIUM' %}#c9a800{% elif f.severity.value == 'LOW' %}#2980b9{% else %}#7f8c8d{% endif %}">{{ f.severity.value }}</span>
+      <span class="masvs-id">{{ f.masvs_id }}</span>
+      <span class="finding-title">{{ f.title }}</span>
+      <span class="toggle-hint">▾</span>
+    </div>
+    <div class="finding-body">
+      <div class="finding-detail">{{ f.detail | replace('\n', '<br>') | safe }}</div>
+      {% if f.evidence_paths %}
+      <div style="margin-bottom:6px">
+        {% for ep in f.evidence_paths %}
+        <div class="evidence-path">{{ ep }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% if f.raw_output %}
+      <pre class="raw">{{ f.raw_output }}</pre>
+      {% endif %}
+      <div style="color:#9a9690;font-size:11px;margin-top:6px">Found by: {{ f.module }} · {{ f.discovered_at.strftime('%H:%M:%S UTC') }} · ID: {{ f.id }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="no-findings">No findings recorded in this session.</div>
+{% endfor %}
+
+{% if session.notes %}
+<div class="section">
+  <h2>Notes</h2>
+  {% for note in session.notes %}
+  <div style="font-size:13px;color:#3a3830;padding:4px 0;border-bottom:1px solid #e0ddd8">{{ note }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<footer>
+  Generated by simaudit {{ simaudit_version }} at {{ generated_at }} ·
+  <a href="https://github.com/Jammysk8/simaudit" style="color:#6060a0">github.com/Jammysk8/simaudit</a>
+</footer>
+
+</div>
+<script>
+function toggle(header){
+  var body = header.nextElementSibling;
+  var hint = header.querySelector('.toggle-hint');
+  body.classList.toggle('open');
+  hint.textContent = body.classList.contains('open') ? '▴' : '▾';
+}
+</script>
+</body>
+</html>
