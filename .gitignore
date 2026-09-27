@@ -12,5 +12,3 @@ venv/
 htmlcov/
 *.log
 .simaudit/
-examples/demo_session/*.json
-examples/demo_session/report.html

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>simaudit — SampleApp — Assessment Report</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.6;background:#f5f5f0;color:#1a1a18;padding:20px}
+.page{max-width:900px;margin:0 auto}
+header{background:#1a1a18;color:#f0ede6;padding:28px 32px;border-radius:10px;margin-bottom:24px}
+header h1{font-size:22px;font-weight:600;margin-bottom:4px}
+header .meta{color:#9a9690;font-size:13px}
+header .badge{display:inline-block;background:#2d2d2a;border-radius:4px;padding:2px 8px;font-size:11px;font-family:monospace;margin-top:8px}
+.warn-box{background:#fff8e6;border:1px solid #f0a800;border-radius:8px;padding:12px 16px;font-size:13px;color:#7a5a00;margin-bottom:20px}
+.summary-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.sev-card{background:#fff;border:1px solid #e0ddd8;border-radius:8px;padding:14px 18px;min-width:100px;text-align:center;flex:1}
+.sev-card .count{font-size:28px;font-weight:700;line-height:1}
+.sev-card .label{font-size:11px;color:#8a8880;text-transform:uppercase;letter-spacing:0.08em;margin-top:4px}
+.section{margin-bottom:28px}
+.section h2{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#6a6860;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e0ddd8}
+.finding{background:#fff;border:1px solid #e0ddd8;border-radius:8px;margin-bottom:8px;overflow:hidden}
+.finding-header{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;cursor:pointer;user-select:none}
+.finding-header:hover{background:#f9f8f5}
+.sev-badge{display:inline-block;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap;flex-shrink:0;color:#fff}
+.masvs-id{font-family:monospace;font-size:11px;background:#f0ede6;color:#5a5850;border-radius:3px;padding:2px 6px;flex-shrink:0}
+.finding-title{font-size:13.5px;font-weight:500;flex:1}
+.finding-body{display:none;padding:12px 14px;border-top:1px solid #e0ddd8;background:#faf9f7}
+.finding-body.open{display:block}
+.finding-detail{font-size:13px;color:#3a3830;margin-bottom:8px}
+.evidence-path{font-family:monospace;font-size:11.5px;color:#6060a0;background:#f0eeff;border-radius:3px;padding:2px 6px;word-break:break-all}
+pre.raw{background:#1a1a18;color:#c0bdb8;padding:12px;border-radius:6px;font-size:11.5px;line-height:1.6;overflow-x:auto;white-space:pre-wrap;word-break:break-word;margin-top:8px;max-height:300px;overflow-y:auto}
+.toggle-hint{font-size:11px;color:#9a9690;margin-left:auto;flex-shrink:0}
+.modules-run{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.mod-chip{background:#e8f4e8;color:#2a5a2a;border-radius:4px;padding:2px 8px;font-size:12px;font-family:monospace}
+.no-findings{color:#8a8880;font-size:13px;padding:12px 0;font-style:italic}
+footer{text-align:center;color:#9a9690;font-size:12px;margin-top:32px;padding-top:16px;border-top:1px solid #e0ddd8}
+@media(max-width:600px){.summary-row{gap:8px}.sev-card{min-width:70px;padding:10px 12px}.sev-card .count{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>simaudit Assessment Report</h1>
+  <div class="meta">App: <strong>SampleApp</strong> · Bundle: <code>com.example.sampleapp</code> · v1.0.0</div>
+  <div class="meta">Started: 2026-09-27 10:55 UTC · Session: a4fd1776-f40</div>
+  <div class="badge">simaudit 0.1.0 · Simulator-only assessment</div>
+</header>
+
+<div class="warn-box">
+  ⚠ <strong>Simulator-only assessment.</strong> Results reflect a debug/development build running on Xcode Simulator. Secure Enclave, hardware-backed Keychain, App Store binary encryption, and anti-tampering controls are not present in this environment. Findings are leads for further investigation on real hardware, not submittable vulnerability reports.
+</div>
+
+<div class="summary-row">
+
+  <div class="sev-card">
+    <div class="count" style="color:#c0392b">0</div>
+    <div class="label">CRITICAL</div>
+  </div>
+
+  <div class="sev-card">
+    <div class="count" style="color:#e67e22">2</div>
+    <div class="label">HIGH</div>
+  </div>
+
+  <div class="sev-card">
+    <div class="count" style="color:#c9a800">3</div>
+    <div class="label">MEDIUM</div>
+  </div>
+
+  <div class="sev-card">
+    <div class="count" style="color:#2980b9">2</div>
+    <div class="label">LOW</div>
+  </div>
+
+  <div class="sev-card">
+    <div class="count" style="color:#7f8c8d">2</div>
+    <div class="label">INFO</div>
+  </div>
+
+</div>
+
+
+<div class="section">
+  <h2>Modules Run</h2>
+  <div class="modules-run">
+    <span class="mod-chip">static</span><span class="mod-chip">storage</span><span class="mod-chip">deeplinks</span>
+  </div>
+</div>
+
+
+
+<div class="section">
+  <h2>MASVS-NETWORK (1)</h2>
+  
+  <div class="finding">
+    <div class="finding-header" onclick="toggle(this)">
+      <span class="sev-badge" style="background:#e67e22">HIGH</span>
+      <span class="masvs-id">MASVS-NETWORK-1</span>
+      <span class="finding-title">ATS disabled globally — all HTTP traffic allowed</span>
+      <span class="toggle-hint">▾</span>
+    </div>
+    <div class="finding-body">
+      <div class="finding-detail">Info.plist key NSAppTransportSecurity.NSAllowsArbitraryLoads = True</div>
+      
+      <div style="margin-bottom:6px">
+        
+        <div class="evidence-path">/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/Info.plist</div>
+        
+      </div>
+      
+      
+      <div style="color:#9a9690;font-size:11px;margin-top:6px">Found by: static · 10:55:48 UTC · ID: 8384ab3e</div>
+    </div>
+  </div>
+  
+</div>
+
+<div class="section">
+  <h2>MASVS-STORAGE (2)</h2>
+  
+  <div class="finding">
+    <div class="finding-header" onclick="toggle(this)">
+      <span class="sev-badge" style="background:#e67e22">HIGH</span>
+      <span class="masvs-id">MASVS-STORAGE-1</span>
+      <span class="finding-title">Potentially sensitive keys in NSUserDefaults</span>
+      <span class="toggle-hint">▾</span>
+    </div>
+    <div class="finding-body">
+      <div class="finding-detail">NSUserDefaults is not encrypted. Sensitive values stored here are readable by anyone with filesystem access to the app's data container.<br>Keys found: authToken</div>
+      
+      <div style="margin-bottom:6px">
+        
+        <div class="evidence-path">/Users/jamilditta/simaudit/tests/fixtures/AppContainer/Library/Preferences/com.example.sampleapp.plist</div>
+        
+      </div>
+      
+      
+      <pre class="raw">authToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test</pre>
+      
+      <div style="color:#9a9690;font-size:11px;margin-top:6px">Found by: storage · 10:55:49 UTC · ID: 34a074b6</div>
+    </div>
+  </div>
+  
+  <div class="finding">
+    <div class="finding-header" onclick="toggle(this)">
+      <span class="sev-badge" style="background:#c9a800">MEDIUM</span>
+      <span class="masvs-id">MASVS-STORAGE-1</span>
+      <span class="finding-title">SQLite database with sensitive-looking columns: userdata.sqlite</span>
+      <span class="toggle-hint">▾</span>
+    </div>
+    <div class="finding-body">
+      <div class="finding-detail">Tables with sensitive column names: users.<br>Verify that this data is encrypted at rest or that it does not contain sensitive PII/credentials.</div>
+      
+      <div style="margin-bottom:6px">
+        
+        <div class="evidence-path">/Users/jamilditta/simaudit/tests/fixtures/AppContainer/Library/userdata.sqlite</div>
+        
+      </div>
+      
+      
+      <pre class="raw">users (id, username, password, email) — 1 rows</pre>
+      
+      <div style="color:#9a9690;font-size:11px;margin-top:6px">Found by: storage · 10:55:49 UTC · ID: b863e464</div>
+    </div>
+  </div>
+  
+</div>
+
+<div class="section">
+  <h2>MASVS-CODE (4)</h2>
+  
+  <div class="finding">
+    <div class="finding-header" onclick="toggle(this)">
+      <span class="sev-badge" style="background:#c9a800">MEDIUM</span>
+      <span class="masvs-id">MASVS-CODE-4</span>
+      <span class="finding-title">PIE (Position Independent Executable) flag not set</span>
+      <span class="toggle-hint">▾</span>
+    </div>
+    <div class="finding-body">
+      <div class="finding-detail">ASLR is less effective without PIE. Compile with -pie.</div>
+      
+      <div style="margin-bottom:6px">
+        
+        <div class="evidence-path">/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/SampleApp</div>
+        
+      </div>
+      
+      
+      <pre class="raw">/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/SampleApp: is not an object file
+</pre>
+      
+      <div style="color:#9a9690;font-size:11px;margin-top:6px">Found by: static · 10:55:49 UTC · ID: ed2b5db8</div>
+    </div>
+  </div>
+  
+  <div class="finding">
+    <div class="finding-header" onclick="toggle(this)">
+      <span class="sev-badge" style="background:#c9a800">MEDIUM</span>
+      <span class="masvs-id">MASVS-CODE-4</span>
+      <span class="finding-title">Stack canary (__stack_chk_fail) symbol not found</span>
+      <span class="toggle-hint">▾</span>
+    </div>
+    <div class="finding-body">
+      <div class="finding-detail">Stack protection may not be enabled. Compile with -fstack-protector-all.</div>
+      
+      <div style="margin-bottom:6px">
+        
+        <div class="evidence-path">/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/SampleApp</div>
+        
+      </div>
+      
+      
+      <div style="color:#9a9690;font-size:11px;margin-top:6px">Found by: static · 10:55:49 UTC · ID: b125e103</div>
+    </div>
+  </div>
+  
+  <div class="finding">
+    <div class="finding-header" onclick="toggle(this)">
+      <span class="sev-badge" style="background:#2980b9">LOW</span>
+      <span class="masvs-id">MASVS-CODE-1</span>
+      <span class="finding-title">Low minimum OS version: 14.0</span>
+      <span class="toggle-hint">▾</span>
+    </div>
+    <div class="finding-body">
+      <div class="finding-detail">Supporting iOS < 15 includes devices that cannot receive security updates.</div>
+      
+      <div style="margin-bottom:6px">
+        
+        <div class="evidence-path">/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/Info.plist</div>
+        
+      </div>
+      
+      
+      <div style="color:#9a9690;font-size:11px;margin-top:6px">Found by: static · 10:55:48 UTC · ID: 1042b3c7</div>
+    </div>
+  </div>
+  
+  <div class="finding">
+    <div class="finding-header" onclick="toggle(this)">
+      <span class="sev-badge" style="background:#2980b9">LOW</span>
+      <span class="masvs-id">MASVS-CODE-4</span>
+      <span class="finding-title">ARC (Automatic Reference Counting) markers not found</span>
+      <span class="toggle-hint">▾</span>
+    </div>
+    <div class="finding-body">
+      <div class="finding-detail">Binary may not be compiled with ARC enabled.</div>
+      
+      <div style="margin-bottom:6px">
+        
+        <div class="evidence-path">/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/SampleApp</div>
+        
+      </div>
+      
+      
+      <div style="color:#9a9690;font-size:11px;margin-top:6px">Found by: static · 10:55:49 UTC · ID: 563bf09d</div>
+    </div>
+  </div>
+  
+</div>
+
+<div class="section">
+  <h2>MASVS-PLATFORM (2)</h2>
+  
+  <div class="finding">
+    <div class="finding-header" onclick="toggle(this)">
+      <span class="sev-badge" style="background:#7f8c8d">INFO</span>
+      <span class="masvs-id">MASVS-PLATFORM-1</span>
+      <span class="finding-title">Custom URL scheme(s) registered: sampleapp</span>
+      <span class="toggle-hint">▾</span>
+    </div>
+    <div class="finding-body">
+      <div class="finding-detail">Custom URL schemes can be registered by any app; use Universal Links for auth callbacks.</div>
+      
+      <div style="margin-bottom:6px">
+        
+        <div class="evidence-path">/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/Info.plist</div>
+        
+      </div>
+      
+      
+      <pre class="raw">Schemes: ['sampleapp']</pre>
+      
+      <div style="color:#9a9690;font-size:11px;margin-top:6px">Found by: static · 10:55:48 UTC · ID: 0d33f4e1</div>
+    </div>
+  </div>
+  
+  <div class="finding">
+    <div class="finding-header" onclick="toggle(this)">
+      <span class="sev-badge" style="background:#7f8c8d">INFO</span>
+      <span class="masvs-id">MASVS-PLATFORM-1</span>
+      <span class="finding-title">Custom URL scheme(s) found: sampleapp://</span>
+      <span class="toggle-hint">▾</span>
+    </div>
+    <div class="finding-body">
+      <div class="finding-detail">Custom URL schemes can be claimed by any installed app. OAuth callbacks or sensitive actions delivered via custom schemes are vulnerable to scheme hijacking. Prefer Universal Links.</div>
+      
+      <div style="margin-bottom:6px">
+        
+        <div class="evidence-path">/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/Info.plist</div>
+        
+      </div>
+      
+      
+      <pre class="raw">sampleapp:// (role=Editor)</pre>
+      
+      <div style="color:#9a9690;font-size:11px;margin-top:6px">Found by: deeplinks · 10:55:49 UTC · ID: 5e711f57</div>
+    </div>
+  </div>
+  
+</div>
+
+
+
+
+<footer>
+  Generated by simaudit 0.1.0 at 2026-09-27T10:55:49.536366+00:00 ·
+  <a href="https://github.com/Jammysk8/simaudit" style="color:#6060a0">github.com/Jammysk8/simaudit</a>
+</footer>
+
+</div>
+<script>
+function toggle(header){
+  var body = header.nextElementSibling;
+  var hint = header.querySelector('.toggle-hint');
+  body.classList.toggle('open');
+  hint.textContent = body.classList.contains('open') ? '▴' : '▾';
+}
+</script>
+</body>
+</html>

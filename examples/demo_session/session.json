@@ -1,0 +1,134 @@
+{
+  "session_id": "a4fd1776-f40",
+  "app_name": "SampleApp",
+  "bundle_id": "com.example.sampleapp",
+  "app_version": "1.0.0",
+  "device_udid": "",
+  "started_at": "2026-09-27T10:55:48.695952Z",
+  "updated_at": "2026-09-27T10:55:49.512853Z",
+  "findings": [
+    {
+      "id": "8384ab3e",
+      "masvs_id": "MASVS-NETWORK-1",
+      "title": "ATS disabled globally — all HTTP traffic allowed",
+      "detail": "Info.plist key NSAppTransportSecurity.NSAllowsArbitraryLoads = True",
+      "severity": "HIGH",
+      "evidence_paths": [
+        "/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/Info.plist"
+      ],
+      "raw_output": null,
+      "discovered_at": "2026-09-27T10:55:48.699751Z",
+      "module": "static"
+    },
+    {
+      "id": "0d33f4e1",
+      "masvs_id": "MASVS-PLATFORM-1",
+      "title": "Custom URL scheme(s) registered: sampleapp",
+      "detail": "Custom URL schemes can be registered by any app; use Universal Links for auth callbacks.",
+      "severity": "INFO",
+      "evidence_paths": [
+        "/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/Info.plist"
+      ],
+      "raw_output": "Schemes: ['sampleapp']",
+      "discovered_at": "2026-09-27T10:55:48.699795Z",
+      "module": "static"
+    },
+    {
+      "id": "1042b3c7",
+      "masvs_id": "MASVS-CODE-1",
+      "title": "Low minimum OS version: 14.0",
+      "detail": "Supporting iOS < 15 includes devices that cannot receive security updates.",
+      "severity": "LOW",
+      "evidence_paths": [
+        "/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/Info.plist"
+      ],
+      "raw_output": null,
+      "discovered_at": "2026-09-27T10:55:48.699814Z",
+      "module": "static"
+    },
+    {
+      "id": "ed2b5db8",
+      "masvs_id": "MASVS-CODE-4",
+      "title": "PIE (Position Independent Executable) flag not set",
+      "detail": "ASLR is less effective without PIE. Compile with -pie.",
+      "severity": "MEDIUM",
+      "evidence_paths": [
+        "/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/SampleApp"
+      ],
+      "raw_output": "/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/SampleApp: is not an object file\n",
+      "discovered_at": "2026-09-27T10:55:49.159074Z",
+      "module": "static"
+    },
+    {
+      "id": "b125e103",
+      "masvs_id": "MASVS-CODE-4",
+      "title": "Stack canary (__stack_chk_fail) symbol not found",
+      "detail": "Stack protection may not be enabled. Compile with -fstack-protector-all.",
+      "severity": "MEDIUM",
+      "evidence_paths": [
+        "/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/SampleApp"
+      ],
+      "raw_output": null,
+      "discovered_at": "2026-09-27T10:55:49.182077Z",
+      "module": "static"
+    },
+    {
+      "id": "563bf09d",
+      "masvs_id": "MASVS-CODE-4",
+      "title": "ARC (Automatic Reference Counting) markers not found",
+      "detail": "Binary may not be compiled with ARC enabled.",
+      "severity": "LOW",
+      "evidence_paths": [
+        "/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/SampleApp"
+      ],
+      "raw_output": null,
+      "discovered_at": "2026-09-27T10:55:49.182134Z",
+      "module": "static"
+    },
+    {
+      "id": "34a074b6",
+      "masvs_id": "MASVS-STORAGE-1",
+      "title": "Potentially sensitive keys in NSUserDefaults",
+      "detail": "NSUserDefaults is not encrypted. Sensitive values stored here are readable by anyone with filesystem access to the app's data container.\nKeys found: authToken",
+      "severity": "HIGH",
+      "evidence_paths": [
+        "/Users/jamilditta/simaudit/tests/fixtures/AppContainer/Library/Preferences/com.example.sampleapp.plist"
+      ],
+      "raw_output": "authToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.test",
+      "discovered_at": "2026-09-27T10:55:49.257196Z",
+      "module": "storage"
+    },
+    {
+      "id": "b863e464",
+      "masvs_id": "MASVS-STORAGE-1",
+      "title": "SQLite database with sensitive-looking columns: userdata.sqlite",
+      "detail": "Tables with sensitive column names: users.\nVerify that this data is encrypted at rest or that it does not contain sensitive PII/credentials.",
+      "severity": "MEDIUM",
+      "evidence_paths": [
+        "/Users/jamilditta/simaudit/tests/fixtures/AppContainer/Library/userdata.sqlite"
+      ],
+      "raw_output": "users (id, username, password, email) — 1 rows",
+      "discovered_at": "2026-09-27T10:55:49.265457Z",
+      "module": "storage"
+    },
+    {
+      "id": "5e711f57",
+      "masvs_id": "MASVS-PLATFORM-1",
+      "title": "Custom URL scheme(s) found: sampleapp://",
+      "detail": "Custom URL schemes can be claimed by any installed app. OAuth callbacks or sensitive actions delivered via custom schemes are vulnerable to scheme hijacking. Prefer Universal Links.",
+      "severity": "INFO",
+      "evidence_paths": [
+        "/Users/jamilditta/simaudit/tests/fixtures/SampleApp.app/Info.plist"
+      ],
+      "raw_output": "sampleapp:// (role=Editor)",
+      "discovered_at": "2026-09-27T10:55:49.512551Z",
+      "module": "deeplinks"
+    }
+  ],
+  "notes": [],
+  "modules_run": [
+    "static",
+    "storage",
+    "deeplinks"
+  ]
+}
